@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4"
+      xmlns:sec="http://www.w3.org/1999/xhtml">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+<title>后台管理系统模板</title>
+<link rel="icon" href="favicon.ico" type="image/ico">
+<meta name="keywords" content="模板">
+<meta name="description" content="后台管理系统">
+<meta name="author" content="soulCoder">
+ <div th:include="~{views/common/include :: cssStyle }"></div>
+</head>
+
+<body>
+<div class="coder-layout-web">
+  <div class="coder-layout-container">
+    <!--左侧导航-->
+       <div th:include="~{views/common/include :: #asideStyle }"></div>
+    <!--End 左侧导航-->
+
+    <!--头部信息-->
+      <div th:include="~{views/common/include :: #headerStyle }"></div>
+    <!--End 头部信息-->
+
+    <!--页面主要内容-->
+    <main class="coder-layout-content" style="width:100%;">
+      <div class="container-fluid" style="color: transparent;">
+        <div class="row" style="height:400px; ">
+            <div class="card">
+
+              <div class="card-body" style="height: 100%;color: transparent">
+
+                <div class="col-lg-12">
+                    <!--通过canvas 的属性 id来控制-->
+                  <canvas id="popChart" width="700" height="300px"></canvas>
+                </div>
+
+              </div>
+            </div>
+        </div>
+
+      </div>
+
+    </main>
+    <!--End 页面主要内容-->
+  </div>
+</div>
+
+<div th:include="~{views/common/include :: #jsStyle }"></div>
+<script type="text/javascript" src="https://cdn.bootcdn.net/ajax/libs/Chart.js/2.7.3/Chart.min.js"></script>
+<!--图表插件-->
+<script type="text/javascript">
+$(document).ready(function(e) {
+  var popCanvas = $("#popChart");
+  //查询每个学生的总成绩,报表
+  $.ajax({
+      url:'/report/getData',
+      type:'POST',
+      success:function(data){//返回的数据，取出数据，展示在页面上
+          //形式是这样的 [{nickName:xxx,totalScore:100},{}，{}]  map来存储数据，因为是map键值对的形式. 循环取出
+          var barChart = new Chart(popCanvas, {
+              type: 'bar',
+              data: {
+                  //report为报表对象 即ReportVO对象，也可以改名，循环取出
+                  labels: data.map(report=>{return report.nickName }),//动态
+                  datasets: [{
+                      label: '每个学生的总成绩',
+                      data: data.map(report=>{return report.totalScore }),//动态
+                      backgroundColor: [
+                          'rgba(255, 99, 132, 0.6)',
+                          'rgba(54, 162, 235, 0.6)',
+                          'rgba(255, 11, 86, 0.6)',
+                          'rgba(75, 192, 192, 0.6)',
+                          'rgba(153, 102, 255, 0.6)',
+                          'rgba(255, 159, 64, 0.6)',
+                          'rgba(255, 99, 132, 0.6)',
+                          'rgba(153, 102, 255, 0.6)'
+                      ]
+                  }]
+              }
+          });
+      }
+  })
+
+
+
+
+});
+</script>
+</body>
+</html>

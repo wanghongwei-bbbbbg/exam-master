@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.mz.auth.mapper.StudentMapper">
+    <sql id="whereSql">
+        <where>
+            <if test="username!=null and username !=''">
+                and username like concat('%',#{username},'%')
+            </if>
+        </where>
+    </sql>
+
+    <!--因为建实体类时与表列名一致,因此没有需要定义映射的-->
+    <resultMap id="studentResultMap" type="com.mz.auth.entity.Student">
+    </resultMap>
+
+    <select id="queryTotal" parameterType="com.mz.auth.query.StudentQuery" resultType="java.lang.Long">
+        select count(*) from t_student
+        <include refid="whereSql"/>
+    </select>
+    <!--    分页的数据-->
+    <!--既不指定resultMap又不指定resultType是不行的-->
+    <select id="queryData" parameterType="com.mz.auth.query.StudentQuery" resultMap="studentResultMap">
+        select * from t_student
+        <include refid="whereSql"/>
+        limit #{offset},#{page}
+    </select>
+</mapper>

@@ -1,0 +1,793 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+    <title>后台管理系统模板</title>
+    <link rel="icon" href="favicon.ico" type="image/ico">
+    <meta name="keywords" content="模板">
+    <meta name="description" content="后台管理系统的HTML模板。">
+    <meta name="author" content="SoulCoder">
+    <div th:include="~{views/common/include :: cssStyle }"></div>
+    <!-- 引入bootstrapmarkdown样式-->
+    <link rel="stylesheet" th:href="@{/static/js/plugins/markdown/css/bootstrap-markdown.min.css}">
+
+    <!-- 引入ztree样式-->
+    <link rel="stylesheet" th:href="@{/static/js/plugins/ztree/css/bootstrapStyle/bootstrapStyle.css}" type="text/css">
+</head>
+<body>
+<div class="coder-layout-web">
+    <div class="coder-layout-container">
+        <!--左侧导航-->
+        <div th:include="~{views/common/include :: #asideStyle }"></div>
+        <!--End 左侧导航-->
+        <!--头部信息-->
+        <div th:include="~{views/common/include :: #headerStyle }"></div>
+        <!--End 头部信息-->
+        <!--页面主要内容-->
+        <main class="coder-layout-content">
+
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-lg-3">
+                        <ul id="dicTypeTree" class="ztree"></ul>
+                    </div>
+                    <div class="col-lg-9">
+                        <div class="card">
+                            <div class="card-toolbar clearfix">
+
+                                <!-- 按钮区start-->
+                                <div class="toolbar-btn-action">
+                                    <button  type="button" class="btn btn-primary" data-toggle="modal" data-method="addDicType" >
+                                        <i class="mdi mdi-plus"></i>新增字典类型
+                                    </button>
+                                    <button  type="button" class="btn btn-success" data-toggle="modal" data-method="editDicType" >
+                                        <i class="mdi mdi-plus"></i>编辑字典类型
+                                    </button>
+                                    <button  type="button" class="btn btn-danger" data-toggle="modal" data-method="deleteDicType" >
+                                        <i class="mdi mdi-plus"></i>删除字典类型
+                                    </button>
+                                    <button  type="button" class="btn btn-info" data-toggle="modal" data-method="addDicTypeData" >
+                                        <i class="mdi mdi-plus"></i>新增类型数据
+                                    </button>
+
+                                    <!--<button  type="button" class="btn btn-primary" data-toggle="modal" data-method="randomQuestion" >-->
+                                    <!--<i class="mdi mdi-plus"></i>随机组卷-->
+                                    <!--</button>-->
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table id="dicDataTable" ></table>
+                                </div>
+                            </div>
+
+                            <!-- 新增字典类型表单start-->
+                            <div class="modal fade" id="dicTypeAddModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+                                <div class="modal-dialog" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span></button>
+                                            <h4 class="modal-title" id="dicTypeAddModalLabel">新增字典类型:</h4>
+                                        </div>
+                                        <form id="dicTypeAddForm" method="post" >
+                                            <div class="modal-body">
+                                                <!-- 试题名称-->
+                                                <div class="form-group">
+                                                    <label for="a_sn" class="control-label">类型编码：</label>
+                                                    <input type="text" class="form-control" name="sn" id="a_sn">
+                                                </div>
+                                                <!-- 试题名称-->
+                                                <div class="form-group">
+                                                    <label for="a_info" class="control-label">类型名称：</label>
+                                                    <input type="text" class="form-control" name="info" id="a_info">
+                                                </div>
+
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                                                <button type="button" data-method='saveDicType' class="btn btn-primary">保存</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- 新增字典类型表单结束-->
+
+                            <!-- 修改字典类型表单start-->
+                            <div class="modal fade" id="dicTypeEditModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+                                <div class="modal-dialog" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span></button>
+                                            <h4 class="modal-title" id="dicTypeEditModalLabel">修改字典类型:</h4>
+                                        </div>
+                                        <form id="dicTypeEditForm" method="post" >
+                                            <div class="modal-body">
+
+                                                <!-- 类型编号-->
+                                                <div class="form-group">
+                                                    <label for="e_info" class="control-label">类型编号：</label>
+                                                    <input type="text" class="form-control" name="sn" id="e_sn">
+                                                </div>
+
+
+                                                <!-- 类型名称-->
+                                                <div class="form-group">
+                                                    <label for="e_info" class="control-label">类型名称：</label>
+                                                    <input type="text" class="form-control" name="info" id="e_info">
+                                                </div>
+
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                                                <button type="button" data-method='editSaveDicType' class="btn btn-primary">保存</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- 修改字典类型表单结束-->
+
+
+                            <!-- 新增字典类型数据表单start-->
+                            <div class="modal fade" id="dicTypeDataAddModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+                                <div class="modal-dialog" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span></button>
+                                            <h4 class="modal-title" id="dicTypeDataAddModalLabel">新增字典类型:</h4>
+                                        </div>
+                                        <form id="dicTypeDataAddForm" method="post" >
+                                            <div class="modal-body">
+
+                                                <!-- 试题名称-->
+                                                <div class="form-group">
+                                                    <label for="a_name" class="control-label">类型数据名称：</label>
+                                                    <input type="text" class="form-control" name="name" id="a_name">
+                                                </div>
+
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                                                <button type="button" data-method='saveDicTypeData' class="btn btn-primary">保存</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- 新增字典类型表单结束-->
+
+
+                            <!-- 修改字典类型数据表单start-->
+                            <div class="modal fade" id="dicTypeDataEditModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+                                <div class="modal-dialog" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                            <h4 class="modal-title" >修改字典类型数据</h4>
+                                        </div>
+                                        <form id="dicTypeDataEditForm" method="post">
+                                            <div class="modal-body">
+                                                <input type="hidden" id="e_id" class="form-control" name="id">
+                                                <div class="form-group">
+                                                    <label class="control-label">类型数据名称：</label>
+                                                    <input type="text" id="e_name" class="form-control" name="name">
+                                                </div>
+
+
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                                                <button type="button" data-method='editSaveDicTypeData' class="btn btn-primary">保存</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- 修改字典类型数据表单end-->
+
+
+
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </main>
+
+    </div>
+</div>
+
+<div th:include="~{views/common/include :: #jsStyle}"></div>
+<script type="text/javascript"  th:src="@{/static/js/jquery.serialize-object.min.js}"></script>
+
+<!-- 引入ztree树形组件-->
+<script th:src="@{/static/js/plugins/ztree/js/jquery.ztree.core.js}"></script>
+<script th:src="@{/static/js/plugins/ztree/js/jquery.ztree.excheck.js}"></script>
+<script th:src="@{/static/js/plugins/ztree/js/jquery.ztree.exedit.js}"></script>
+
+<script type="text/javascript">
+    //####################### 公共变量部分##########################################
+    /**
+     *  param:     nodeId 节点id
+     * description: 其实就是试卷的id值 在组卷的时候，看它是否有值，
+     *        如果有值，说明已经选中的试题可以开始组卷
+     */
+    var nodeId ;
+    //点击左侧的 回显的问题id
+    var dicDataIdArr = [];
+
+    //##################################################表格操作######################
+    $(document).ready(function(e){
+        $('#dicDataTable').bootstrapTable({
+            url: '/dic/listpage',                      //请求后台的URL（*）
+            method: 'GET',                      //请求方式（*）
+            //toolbar: '#toolbar',              //工具按钮用哪个容器
+            striped: true,                      //是否显示行间隔色
+            cache: false,                       //是否使用缓存，默认为true，所以一般情况下需要设置一下这个属性（*）
+            pagination: true,                   //是否显示分页（*）
+            sortable: true,                     //是否启用排序
+            sortOrder: "asc",                   //排序方式
+            sidePagination: "server",           //分页方式：client客户端分页，server服务端分页（*）
+            pageNumber: 1,                      //初始化加载第一页，默认第一页,并记录
+            pageSize: 10,                     //每页的记录行数（*）
+            pageList: [10, 25, 50, 100],        //可供选择的每页的行数（*）
+            iconsPrefix: 'mdi', // 自定义表格右上角的图标，这个必须要定义，因为不是官方模板，icon图标样式名字不同会导致图标无法显示
+            icons:  {
+                refresh: 'mdi-refresh',              // 刷新图标
+                columns: 'mdi-format-list-bulleted', // 列图标
+                toggleOff: 'mdi-toggle-switch-off',  // 切换光
+                toggleOn: 'mdi-toggle-switch',       // 切换开
+                detailOpen: 'mdi-plus',              // 详情开
+                detailClose: 'mdi-minus',            // 详情光
+                fullscreen: 'mdi-fullscreen'         // 全屏图标
+            },
+            search: false,                      //是否显示表格搜索
+            strictSearch: true,
+            showColumns: true,                  //是否显示所有的列（选择显示的列）
+            showRefresh: true,                  //是否显示刷新按钮
+            minimumCountColumns: 2,             //最少允许的列数
+            clickToSelect: true,                //是否启用点击选中行
+            //height: 500,                      //行高，如果没有设置height属性，表格自动根据记录条数觉得表格高度
+            uniqueId: "id",                     //每一行的唯一标识，一般为主键列
+            showToggle: true,                   //是否显示详细视图和列表视图的切换按钮
+            cardView: false,                    //是否显示详细视图
+            detailView: false,                  //是否显示父子表
+            singleSelect: false, //开启单选,想要获取被选中的行数据必须要有该参数
+            queryParams : function(params) {//上传服务器的参数
+
+                var temp = {
+                    offset :params.offset + 0,// SQL语句起始索引
+                    page : params.limit  // 每页显示数量
+                };
+                return temp;
+            },
+            columns: [
+                {
+                    align : 'center',
+                    checkbox: true,
+                    formatter:function(value,row,index){
+                        console.log(dicDataIdArr)
+                        //[1,2,3]
+                        for(var i=0;i<dicDataIdArr.length;i++){
+                            if(dicDataIdArr[i] == row.id){
+                                return {
+                                    checked:true
+                                }
+                            }
+                        }
+                    }
+
+                },{
+                    field: 'id',
+                    title: '编号'
+                }, {
+                    field: 'name',
+                    title: '名称'
+                },{
+                    field: 'doOpt',
+                    title: '操作',
+                    formatter : optFormatter
+                }]
+        });
+
+
+        function optFormatter(value,row, index){
+            var c = '<a class="btn btn-xs btn-default" href="#!"  onclick=\'edit("' + row.id + '")\' title="编辑" data-toggle="tooltip"><i class="mdi mdi-pencil"></i></a>';
+            var e = '<div class="btn btn-xs btn-default"  href="#!" onclick="del(\''+row.id+'\')" title="删除"  data-toggle="tooltip"><i class="mdi mdi-window-close"></i><div/> ';
+            return c + e ;
+        }
+
+
+        //绑定事件
+        $("button,a").on('click',function(){
+            //获取到 a标签里面配置 data-method
+            var methodName = $(this).data('method');
+            if(methodName){
+                doMethod[methodName]();
+            }
+        });
+        var doMethod = {
+            addDicType:function(){
+                //新增字典类型
+                $("#dicTypeAddModal").modal({show:true})
+            },
+            saveDicType:function(){
+                //保存字典类型
+                var sendObj = {
+                    sn:$("#a_sn").val(),
+                    info:$("#a_info").val()
+                }
+                $.ajax({
+                    url:"/dic/saveDicType",
+                    type:"POST",
+                    dataType:"json",
+                    data:JSON.stringify(sendObj),
+                    contentType:"application/json;charset=utf-8",
+                    success:function(data){
+                        if(data.isSuccess){
+                            $.confirm({
+                                title:'温馨提示',
+                                content:'保存成功',
+                                type:'green',
+                                buttons:{
+                                    ok:{
+                                        text:"谢谢",
+                                        btnClass:'btn-green',
+                                        action:function(){
+                                            location.href="/dic/index";
+                                        }
+                                    }
+                                }
+                            })
+                        }else{
+                            $.confirm({
+                                title:'温馨提示',
+                                content:'保存失败'+data.message,
+                                type:'red',
+                                buttons:{
+                                    ok:{
+                                        text:"关闭",
+                                        btnClass:'btn-red'
+                                    }
+                                }
+                            })
+                        }
+                    }
+                })
+            },
+            editDicType:function(){
+                if(!nodeId){
+                    //表示没有选中左侧试卷树
+                    $.confirm({
+                        title:'温馨提示',
+                        content:'亲,请选中左侧字典类型树名称,进行编辑操作',
+                        type:'green',
+                        buttons:{
+                            ok:{
+                                text:"谢谢",
+                                btnClass:'btn-green'
+                            }
+                        }
+                    })
+
+                    return
+                }
+                //根据字典类型id 查询字典类型
+                $.ajax({
+                    url:"/dic/queryDicTypeInfoById",
+                    type:"POST",
+                    data:{"id":nodeId},
+                    success:function(data){
+                        //弹出修改字典类型的表单
+                        $("#dicTypeEditModal").modal({show:true})
+                        $("#e_sn").val(data.sn);
+                        $("#e_info").val(data.info);
+                    }
+                })
+            },
+            editSaveDicType:function(){
+                //修改保存字典类型
+                //保存字典类型
+                var sendObj = {
+                    id:nodeId,
+                    sn:$("#e_sn").val(),
+                    info:$("#e_info").val()
+                }
+                $.ajax({
+                    url:"/dic/editSaveDicType",
+                    type:"POST",
+                    dataType:"json",
+                    data:JSON.stringify(sendObj),
+                    contentType:"application/json;charset=utf-8",
+                    success:function(data){
+                        if(data.isSuccess){
+                            $.confirm({
+                                title:'温馨提示',
+                                content:'保存成功',
+                                type:'green',
+                                buttons:{
+                                    ok:{
+                                        text:"谢谢",
+                                        btnClass:'btn-green',
+                                        action:function(){
+                                            location.href="/dic/index";
+                                        }
+                                    }
+                                }
+                            })
+                        }else{
+                            $.confirm({
+                                title:'温馨提示',
+                                content:'保存失败'+data.message,
+                                type:'red',
+                                buttons:{
+                                    ok:{
+                                        text:"关闭",
+                                        btnClass:'btn-red'
+                                    }
+                                }
+                            })
+                        }
+                    }
+                })
+            },
+            addDicTypeData:function(){
+                //新增字典类型对应的数据
+                if(!nodeId){
+                    //表示没有选中左侧试卷树
+                    $.confirm({
+                        title:'温馨提示',
+                        content:'亲,请选中左侧字典类型树名称,进行操作',
+                        type:'green',
+                        buttons:{
+                            ok:{
+                                text:"谢谢",
+                                btnClass:'btn-green'
+                            }
+                        }
+                    })
+
+                    return
+                }
+
+                //弹出新增类型数据的表单
+                $("#dicTypeDataAddModal").modal({show:true})
+
+            },
+            saveDicTypeData:function(){
+                //保存字典类型的数据
+                var sendObj = {
+                    name:$("#a_name").val(),
+                    typeid:nodeId
+                }
+                $.ajax({
+                    url:"/dic/saveDicTypeData",
+                    type:"POST",
+                    dataType:"json",
+                    data:JSON.stringify(sendObj),
+                    contentType:"application/json;charset=utf-8",
+                    success:function(data){
+                        if(data.isSuccess){
+                            $.confirm({
+                                title:'温馨提示',
+                                content:'保存成功',
+                                type:'green',
+                                buttons:{
+                                    ok:{
+                                        text:"谢谢",
+                                        btnClass:'btn-green',
+                                        action:function(){
+                                            location.href="/dic/index";
+                                        }
+                                    }
+                                }
+                            })
+                        }else{
+                            $.confirm({
+                                title:'温馨提示',
+                                content:'保存失败'+data.message,
+                                type:'red',
+                                buttons:{
+                                    ok:{
+                                        text:"关闭",
+                                        btnClass:'btn-red'
+                                    }
+                                }
+                            })
+                        }
+                    }
+                })
+            },
+            deleteDicType:function(){
+                if(!nodeId){
+                    //表示没有选中左侧类型树
+                    $.confirm({
+                        title:'温馨提示',
+                        content:'亲,请选中左侧字典类型树名称,进行编辑操作',
+                        type:'green',
+                        buttons:{
+                            ok:{
+                                text:"谢谢",
+                                btnClass:'btn-green'
+                            }
+                        }
+                    })
+
+                    return
+                }
+                //根据字典类型id 删除字典类型以及对应数据
+                $.ajax({
+                    url:"/dic/deleteDicType",
+                    type:"POST",
+                    data:{"id":nodeId},
+                    success:function(data){
+                        if(data.isSuccess){
+                            $.confirm({
+                                title:'温馨提示',
+                                content:'删除成功',
+                                type:'green',
+                                buttons:{
+                                    ok:{
+                                        text:"谢谢",
+                                        btnClass:'btn-green',
+                                        action:function(){
+                                            location.href="/dic/index";
+                                        }
+                                    }
+                                }
+                            })
+                        }else{
+                            $.confirm({
+                                title:'温馨提示',
+                                content:'删除失败'+data.message,
+                                type:'red',
+                                buttons:{
+                                    ok:{
+                                        text:"关闭",
+                                        btnClass:'btn-red'
+                                    }
+                                }
+                            })
+                        }
+
+
+                    }
+                })
+            },
+            editSaveDicTypeData:function(){
+                //保存字典类型的数据
+                var sendObj = {
+                    name:$("#e_name").val(),
+                    id:$("#e_id").val()
+                }
+                $.ajax({
+                    url:"/dic/editSaveDicTypeData",
+                    type:"POST",
+                    dataType:"json",
+                    data:JSON.stringify(sendObj),
+                    contentType:"application/json;charset=utf-8",
+                    success:function(data){
+                        if(data.isSuccess){
+                            $.confirm({
+                                title:'温馨提示',
+                                content:'保存成功',
+                                type:'green',
+                                buttons:{
+                                    ok:{
+                                        text:"谢谢",
+                                        btnClass:'btn-green',
+                                        action:function(){
+                                            location.href="/dic/index";
+                                        }
+                                    }
+                                }
+                            })
+                        }else{
+                            $.confirm({
+                                title:'温馨提示',
+                                content:'保存失败'+data.message,
+                                type:'red',
+                                buttons:{
+                                    ok:{
+                                        text:"关闭",
+                                        btnClass:'btn-red'
+                                    }
+                                }
+                            })
+                        }
+                    }
+                })
+            }
+        }
+    });
+
+    /**
+     * 新增类型对应数据
+     * @param id
+     */
+    function edit(typedataid){
+        //弹出修改的表单
+        $("#dicTypeDataEditModal").modal({show:true})
+        //数据的回显操作
+        //清空一下表单数据
+        $('#dicTypeDataEditForm')[0].reset();
+        //获取选中一行数据
+        var editRow = $("#dicDataTable").bootstrapTable('getRowByUniqueId',typedataid)
+        $("#e_id").val(editRow.id)
+        $("#e_name").val(editRow.name)
+    }
+    function del(id){
+        $.confirm({
+            title:'温馨提示',
+            content:'亲,你真的要删除吗',
+            buttons:{
+                ok:{
+                    text:'确定',
+                    btnClass:'btn-red',
+                    action:function(){
+                        $.ajax({
+                            url:'/dic/deleteDicTypeData',
+                            data:{"id":id},
+                            type:'POST',
+                            success:function(data){
+
+                                    if(data.isSuccess){
+                                        $.confirm({
+                                            title:'温馨提示',
+                                            content:'删除成功',
+                                            type:'green',
+                                            buttons:{
+                                                ok:{
+                                                    text:"谢谢",
+                                                    btnClass:'btn-green',
+                                                    action:function(){
+                                                        location.href="/dic/index";
+                                                    }
+                                                }
+                                            }
+                                        })
+                                    }else{
+                                        $.confirm({
+                                            title:'温馨提示',
+                                            content:'删除失败'+data.message,
+                                            type:'red',
+                                            buttons:{
+                                                ok:{
+                                                    text:"关闭",
+                                                    btnClass:'btn-red'
+                                                }
+                                            }
+                                        })
+                                    }
+
+                            }
+                        })
+                    }
+                },
+                cancel:{
+                    text:'取消',
+                    btnClass:'btn-green',
+                }
+            }
+        })
+
+    }
+
+</script>
+
+<script type="text/javascript">
+    //#########################加载左侧树形start################################
+    var setting = {
+        view: {
+            selectedMulti: false
+        },
+        check: {
+            enable: false
+        },
+        data: {
+            simpleData: {
+                enable: true
+            }
+        },
+        callback:{
+            onClick: zTreeOnClick
+        }
+    };
+
+    var zNodes =[
+        {id:99999, pId:0, name:"字典类型", open:true},
+    ];
+
+    $(document).ready(function(){
+        //加载树的数据
+        loadTreeData();
+        $.fn.zTree.init($("#dicTypeTree"), setting, zNodes);
+    });
+
+    function zTreeOnClick(event, treeId, treeNode) {
+        //选中试卷，赋值给全局变量nodeId
+        nodeId = treeNode.id;
+
+        dicDataIdArr=[];
+        //根据字典类型id 就是nodeId 查询 对应的 类型数据的id
+        loadDicTypeData(nodeId)
+    };
+
+    function loadDicTypeData(typeid){
+        $.ajax({
+            url:"/dic/queryDicTypeDataIdsByTypeid",
+            type:"POST",
+            async:false,
+            data:{"typeid":typeid},
+            success:function(data){
+                if(data && data.length>0){
+                    dicDataIdArr=data;
+                }
+                $("#dicDataTable").bootstrapTable('refresh')
+            }
+        })
+
+
+    }
+
+    function loadTreeData(){
+        $.ajax({
+            url:"/dic/queryDicType",
+            type:"POST",
+            async:false,
+            success:function(data){
+                //[{id:111,info:'xxxx',sn:''},{},{}]
+                if(data && data.length>0){
+                    var result =  data.map(item=>{
+                        return {
+                            id:item.id,
+                            name:item.info,
+                            pId:99999
+                        }
+                    })
+                    zNodes = zNodes.concat(result)
+                }
+            }
+        })
+    }
+    //########################################加载树形结束############################
+</script>
+
+<style>
+    .md-header{
+        margin-left: 0px;
+    }
+    .my-container {
+        float: left;
+        display: inline-block;
+        margin-right:30px;
+    }
+
+    .myLabel-content ,.myText-content,.myBtn-content{
+        float: left;
+        display: inline-block;
+        line-height: 40px;
+        margin-left: 10px;
+    }
+    .myLabel-content,.myText-content input[type='text'],.myBtn-content .btn {
+        height: 38px;
+        font-size: 15px;
+    }
+    .myBtn-content .btn {
+        margin-bottom: 10px;
+        margin-right: 20px;
+    }
+</style>
+
+
+
+
+</body>
+</html>
